@@ -1,0 +1,19 @@
+{
+  "name": "bus-ticket-booking",
+  "version": "1.0.0",
+  "description": "A bus ticket booking api server build on express.js with MongoDB as the backend.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/architsingh15/bus-ticket-booking.git"
+  },
+  "author": "Archit Singh",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/architsingh15/bus-ticket-booking/issues"
+  },
+  "homepage": "https://github.com/architsingh15/bus-ticket-booking#readme"
+}
