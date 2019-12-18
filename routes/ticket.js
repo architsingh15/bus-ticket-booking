@@ -110,5 +110,18 @@ router.get('/ticket/details/:ticket_id', (req, res) => {
 
 router.post('/tickets/reset', (req, res) => {
     const { username, password } = req.body
+    let authenticated = false
+    if (username === process.env.USER && password === process.env.PASSWORD) {
+        authenticated = true
+    }
+
+    if (authenticated) {
+        let update = { is_booked: false }
+        Ticket.updateMany({}, update,
+            (err, data) => {
+                if (err) console.log(err)
+                if (data) console.log(data)
+            })
+    }
 })
 module.exports = router

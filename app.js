@@ -1,7 +1,7 @@
 const express = require('express')
 const mongoose = require('mongoose')
-const apiRoutes = require('./routes/ticket')
 const bodyParser = require('body-parser')
+const apiRoutes = require('./routes/ticket')
 require('dotenv/config')
 
 const app = express()
