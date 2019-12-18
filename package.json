@@ -4,7 +4,7 @@
   "description": "A bus ticket booking api server build on express.js with MongoDB as the backend.",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon app.js"
+    "start": "DEBUG=express:* nodemon app.js"
   },
   "repository": {
     "type": "git",
