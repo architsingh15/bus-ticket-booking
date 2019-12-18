@@ -1,29 +1,23 @@
 // improve error messaging
-// create joi configurable middleware 
-// add logging middleware
 // add docstrings
-// check for correct usages of const and let
-// add proper status codes
-// use q to return simplified promises
 // replace  res.status(404).json({ message: data }) with one function
-// think of validations to add for all routes
 const express = require('express')
 const Ticket = require('../models/Ticket')
 const User = require('../models/User')
 const validation = require('../middleware/validation/validation')
+const bcrypt = require('bcrypt')
 const userValidation = validation.userValidation
 
 const router = express.Router()
 
 //create a ticket
 router.post('/ticket', (req, res) => {
-    const { seat_number, passenger } = req.body
 
-    let [result, data] = userValidation(passenger)
+    let [result, data] = userValidation(req.body.passenger)
     if (!result) return res.status(404).json({ message: data })
 
-    const ticket = new Ticket({ seat_number: seat_number })
-    const user = new User(passenger)
+    const ticket = new Ticket({ seat_number: req.body.seat_number })
+    const user = new User(req.body.passenger)
 
     user.save()
         .then(data => {
@@ -39,7 +33,6 @@ router.post('/ticket', (req, res) => {
 })
 
 //update a ticket, update open/closed and user_details
-//is_booked, and any of the user details attributes are only allowed to be passed 
 router.put('/ticket/:ticket_id', (req, res) => {
     const { ticket_id } = req.params
     const payload = req.body
@@ -50,12 +43,12 @@ router.put('/ticket/:ticket_id', (req, res) => {
             const user_id = ticket.passenger
             User.findById(user_id)
                 .then(user => {
-                    ticket.is_booked = payload.is_booked
-                    user.name = payload.passenger.name
-                    user.sex = payload.passenger.sex
-                    user.email = payload.passenger.email
-                    user.phone = payload.passenger.phone
-                    user.age = payload.passenger.age
+                    if ('is_booked' in payload) ticket.is_booked = payload.is_booked
+                    if ('name' in payload.passenger) user.name = payload.passenger.name
+                    if ('sex' in payload.passenger) user.sex = payload.passenger.sex
+                    if ('email' in payload.passenger) user.email = payload.passenger.email
+                    if ('phone' in payload.passenger) user.phone = payload.passenger.phone
+                    if ('age' in payload.passenger) user.age = payload.passenger.age
                     ticket.save()
                         .then(data => {
                             user.save()
@@ -109,19 +102,27 @@ router.get('/ticket/details/:ticket_id', (req, res) => {
 })
 
 router.post('/tickets/reset', (req, res) => {
-    const { username, password } = req.body
-    let authenticated = false
-    if (username === process.env.USER && password === process.env.PASSWORD) {
-        authenticated = true
+
+    if (!("username" in req.body) && !("password" in req.body)) {
+        res.status(400).json({ message: "username and password is needed in request body" })
     }
 
-    if (authenticated) {
-        let update = { is_booked: false }
-        Ticket.updateMany({}, update,
-            (err, data) => {
-                if (err) console.log(err)
-                if (data) console.log(data)
-            })
+    const { username, password } = req.body
+    if (!(bcrypt.compareSync(password, process.env.PASSWORD))) {
+        res.status(400).json({ message: "password is incorrect" })
     }
+    if (!(username === process.env.USER)) {
+        res.status(400).json({ message: "username is incorrect" })
+    }
+
+    Ticket.find({}, (err, data) => {
+        if (err) res.status(404).json({ message: err })
+        if (data) {
+            data.forEach(openTicket)
+            res.status(200).json({ message: "success" })
+        }
+    })
+
 })
+
 module.exports = router
