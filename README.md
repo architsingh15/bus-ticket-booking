@@ -20,8 +20,8 @@ Hosted on heroku on the url: https://mighty-retreat-96950.herokuapp.com
     }
 }
 * returns:
-* 200: if success, returns object that was saved
-* 404: if fails returns error in this format {message:"error in string"}
+200: if success, returns object that was saved
+404: if fails returns error in this format {message:"error in string"}
 
 **PUT '/api/ticket/:ticket_id'**
 * *Edit the ticket details and/or the passenger details*
@@ -38,32 +38,32 @@ Hosted on heroku on the url: https://mighty-retreat-96950.herokuapp.com
     }
 }
 * returns:
-* 200: if success, returns object that was saved
-* 404: if fails returns error in this format {message:"error in string"}
+200: if success, returns object that was saved
+404: if fails returns error in this format {message:"error in string"}
 
 **GET /api/ticket/:ticket_id**
 * *Get the status of the ticket based on the ticket_id passed in URL*
 * returns:
-* 200: if success, returns object that was saved
-* 404: if fails returns error in this format {message:"error in string"}
+200: if success, returns object that was saved
+404: if fails returns error in this format {message:"error in string"}
 
 **GET /api/tickets/open**
 * *Get a list of tickets which have is_booked: false, that is, are open*
 * returns:
-* 200: if success, returns object that was saved
-* 404: if fails returns error in this format {message:"error in string"}
+200: if success, returns object that was saved
+404: if fails returns error in this format {message:"error in string"}
 
 **GET /api/tickets/closed**
 * *Get a list of tickets which have is_booked: true, that is, are closed*
 * returns:
-* 200: if success, returns object that was saved
-* 404: if fails returns error in this format {message:"error in string"}
+200: if success, returns object that was saved
+404: if fails returns error in this format {message:"error in string"}
 
 **GET /api/ticket/details/:ticket_id**
 * *Get the user details of the ticket based on the ticket_id passed*
 * returns:
-* 200: if success, returns object that was saved
-* 404: if fails returns error in this format {message:"error in string"}
+200: if success, returns object that was saved
+404: if fails returns error in this format {message:"error in string"}
 
 **POST /api/tickets/reset**
 * *Open all the tickets that are in the DB*
@@ -75,8 +75,8 @@ Hosted on heroku on the url: https://mighty-retreat-96950.herokuapp.com
 }
 
 * returns:
-* 200: if success, returns object that was saved
-* 404: if fails returns error in this format {message:"error in string"}
+200: if success, returns object that was saved
+404: if fails returns error in this format {message:"error in string"}
 
 **MongoDB schema**
 * *Ticket document*
