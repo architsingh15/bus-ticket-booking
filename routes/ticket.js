@@ -44,11 +44,13 @@ router.put('/ticket/:ticket_id', (req, res) => {
             User.findById(user_id)
                 .then(user => {
                     if ('is_booked' in payload) ticket.is_booked = payload.is_booked
-                    if ('name' in payload.passenger) user.name = payload.passenger.name
-                    if ('sex' in payload.passenger) user.sex = payload.passenger.sex
-                    if ('email' in payload.passenger) user.email = payload.passenger.email
-                    if ('phone' in payload.passenger) user.phone = payload.passenger.phone
-                    if ('age' in payload.passenger) user.age = payload.passenger.age
+                    if ('passenger' in payload) {
+                        if ('name' in payload.passenger) user.name = payload.passenger.name
+                        if ('sex' in payload.passenger) user.sex = payload.passenger.sex
+                        if ('email' in payload.passenger) user.email = payload.passenger.email
+                        if ('phone' in payload.passenger) user.phone = payload.passenger.phone
+                        if ('age' in payload.passenger) user.age = payload.passenger.age
+                    }
                     ticket.save()
                         .then(data => {
                             user.save()
