@@ -2,6 +2,7 @@
 A bus ticket booking api server build on express.js with MongoDB as the backend. 
 
 Hosted on heroku on the url: https://mighty-retreat-96950.herokuapp.com
+Example API: https://mighty-retreat-96950.herokuapp.com/api/tickets/open
 
 **API docs:**
 
