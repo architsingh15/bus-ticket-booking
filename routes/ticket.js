@@ -25,7 +25,11 @@ router.post('/ticket', (req, res) => {
                 ticket.passenger = user._id
                 ticket.save()
                     .then(data => res.status(200).json(data))
-                    .catch(err => res.status(404).json({ message: err }))
+                    .catch(err => {
+                        User.findOneAndDelete({ _id: user._id })
+                            .then((data) => res.status(400))
+                            .catch(err => res.status(400).json({ message: err }))
+                    })
             }
         })
         .catch(err => res.status(404).json({ message: err }))
@@ -110,7 +114,7 @@ router.post('/tickets/reset', (req, res) => {
     }
 
     const { username, password } = req.body
-    if (!(bcrypt.compareSync(password, process.env.PASSWORD))) {
+    if (!(bcrypt.compareSync(password, process.env.PASSWORD_HASH))) {
         res.status(400).json({ message: "password is incorrect" })
     }
     if (!(username === process.env.USER)) {
