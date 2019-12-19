@@ -24,7 +24,15 @@ function userValidation(user) {
     return validateObj(user, userSchema)
 }
 
+function openTicket(ticket) {
+    ticket.is_booked = false
+    ticket.save()
+        .then(data => console.log(`Opened ticket with ticketID: ${ticket._id}`))
+        .catch(err => console.log(`Failed to open ticket with ticketID: ${ticket._id}`))
+}
+
 module.exports = {
     userValidation: userValidation,
+    openTicket: openTicket,
 }
 

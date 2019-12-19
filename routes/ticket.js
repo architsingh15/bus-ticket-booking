@@ -7,6 +7,7 @@ const User = require('../models/User')
 const validation = require('../middleware/validation/validation')
 const bcrypt = require('bcrypt')
 const userValidation = validation.userValidation
+const openTicket = validation.openTicket
 
 const router = express.Router()
 
@@ -114,8 +115,9 @@ router.post('/tickets/reset', (req, res) => {
     }
 
     const { username, password } = req.body
+
     if (!(bcrypt.compareSync(password, process.env.PASSWORD_HASH))) {
-        res.status(400).json({ message: "password is incorrect" })
+
     }
     if (!(username === process.env.USER)) {
         res.status(400).json({ message: "username is incorrect" })
