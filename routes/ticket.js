@@ -1,6 +1,3 @@
-// improve error messaging
-// add docstrings
-// replace  res.status(404).json({ message: data }) with one function
 const express = require('express')
 const Ticket = require('../models/Ticket')
 const User = require('../models/User')
@@ -39,6 +36,56 @@ router.post('/ticket', (req, res) => {
 
 //update a ticket, update open/closed and user_details
 router.put('/ticket/:ticket_id', (req, res) => {
+    //check indempotency for ticket booking status
+    const { ticket_id } = req.params
+    const payload = req.body
+    let passenger = null
+
+    if ('passenger' in payload) {
+        passenger = req.body.passenger
+    }
+
+    if (payload.is_booked == true) {
+        Ticket.findById(ticket_id, function (err, ticket) {
+            if (err) res.status(404).json({ message: err })
+            if (ticket) {
+                const user_id = ticket.passenger
+                User.remove({ _id: user_id }, function (err) {
+                    if (err) {
+                        res.status(404).json({ message: err })
+                    }
+                    else {
+                        ticket.is_booked = payload.is_booked
+                        ticket.save()
+                            .then(data => res.status(200).json(data))
+                            .catch(err => res.status(404).json(err))
+                    }
+                });
+            }
+        })
+    }
+
+    if (payload.is_booked == false && passenger != null) {
+        Ticket.findById(ticket_id, function (err, ticket) {
+            if (err) res.status(404).json({ message: err })
+            if (ticket) {
+                const user = new User(passenger)
+                user.save()
+                    .then(data => {
+                        ticket.passenger = data._id
+                        ticket.is_booked = payload.is_booked
+                        ticket.save()
+                            .then(data => res.status(200).json(data))
+                            .catch(err => res.status(404).json(err))
+                    })
+                    .catch(err => res.status(404).json({ message: err }))
+            }
+        })
+    }
+})
+
+// edit details of a user 
+router.put('/user/:ticket_id', (req, res) => {
     const { ticket_id } = req.params
     const payload = req.body
 
@@ -48,25 +95,18 @@ router.put('/ticket/:ticket_id', (req, res) => {
             const user_id = ticket.passenger
             User.findById(user_id)
                 .then(user => {
-                    if ('is_booked' in payload) ticket.is_booked = payload.is_booked
-                    if ('passenger' in payload) {
-                        if ('name' in payload.passenger) user.name = payload.passenger.name
-                        if ('sex' in payload.passenger) user.sex = payload.passenger.sex
-                        if ('email' in payload.passenger) user.email = payload.passenger.email
-                        if ('phone' in payload.passenger) user.phone = payload.passenger.phone
-                        if ('age' in payload.passenger) user.age = payload.passenger.age
-                    }
-                    ticket.save()
-                        .then(data => {
-                            user.save()
-                                .then(data => res.status(202).json(data))
-                                .catch(err => res.status(404).json({ message: err }))
-                        })
+                    if ('name' in payload) user.name = payload.name
+                    if ('sex' in payload) user.sex = payload.sex
+                    if ('email' in payload) user.email = payload.email
+                    if ('phone' in payload) user.phone = payload.phone
+                    if ('age' in payload) user.age = payload.age
+                    user.save()
+                        .then(data => res.status(202).json(data))
                         .catch(err => res.status(404).json({ message: err }))
                 })
                 .catch(err => res.status(404).json({ message: err }))
         }
-    });
+    })
 })
 
 // get the status of a ticket based on ticket_id
